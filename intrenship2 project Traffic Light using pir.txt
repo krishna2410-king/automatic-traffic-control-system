@@ -1,0 +1,265 @@
+// Traffic Light Pins
+const int r1 = 0;
+const int y1 = 1;
+const int g1 = 2;
+const int r2 = 3;
+const int y2 = 4;
+const int g2 = 5;
+const int r3 = 6;
+const int y3 = 7;
+const int g3 = 8;
+
+// PIR Sensor Pins
+const int pir1 = 9;
+const int pir2 = 10;
+const int pir3 = 11;
+
+void setup() {
+  // Set light pins as OUTPUT
+  for (int i = 0; i <= 8; i++) {
+    pinMode(i, OUTPUT);
+    digitalWrite(i, LOW);
+  }
+
+  // Set PIR pins as INPUT
+  pinMode(pir1, INPUT);
+  pinMode(pir2, INPUT);
+  pinMode(pir3, INPUT);
+}
+
+void clearLights() {
+  for (int i = 0; i <= 8; i++) {
+    digitalWrite(i, LOW);
+  }
+}
+
+void signal1(int duration) {
+  clearLights();
+  digitalWrite(g1, HIGH);
+  digitalWrite(r2, HIGH);
+  digitalWrite(r3, HIGH);
+  delay(duration);
+  clearLights();
+  digitalWrite(y2, HIGH);  // Yellow transition to next
+  delay(500);
+}
+
+void signal3(int duration) {
+  clearLights();
+  digitalWrite(r1, HIGH);
+  digitalWrite(g2, HIGH);
+  digitalWrite(r3, HIGH);
+  delay(duration);
+  clearLights();
+  digitalWrite(y3, HIGH);
+  delay(500);
+}
+
+void signal5(int duration) {
+  clearLights();
+  digitalWrite(r1, HIGH);
+  digitalWrite(r2, HIGH);
+  digitalWrite(g3, HIGH);
+  delay(duration);
+  clearLights();
+  digitalWrite(y1, HIGH);
+  delay(500);
+}
+
+void loop() {
+  int pir_1 = digitalRead(pir1);
+  int pir_2 = digitalRead(pir2);
+  int pir_3 = digitalRead(pir3);
+
+  // Total GREEN time: 19500 ms, each yellow = 500ms × 3 = 1500ms
+  int t1 = 6500, t2 = 6500, t3 = 6500;
+
+  // Adjust timing based on sensor
+  if ((pir_1 == LOW && pir_2 == LOW && pir_3 == LOW) || (pir_1 == HIGH && pir_2 == HIGH && pir_3 == HIGH)) {
+    t1 = t2 = t3 = 6500;
+  } else if (pir_1 == HIGH && pir_2 == LOW && pir_3 == LOW) {
+    t1 = 15000; t2 = 2500; t3 = 2000;
+  } else if (pir_2 == HIGH && pir_1 == LOW && pir_3 == LOW) {
+    t1 = 2000; t2 = 15000; t3 = 2000;
+  } else if (pir_3 == HIGH && pir_1 == LOW && pir_2 == LOW) {
+    t1 = 2000; t2 = 2500; t3 = 15000;
+  } else if (pir_1 == HIGH && pir_2 == HIGH && pir_3 == LOW) {
+    t1 = 9000; t2 = 9000; t3 = 1500;
+  } else if (pir_1 == HIGH && pir_3 == HIGH && pir_2 == LOW) {
+    t1 = 9000; t2 = 1500; t3 = 9000;
+  } else if (pir_2 == HIGH && pir_3 == HIGH && pir_1 == LOW) {
+    t1 = 1500; t2 = 9000; t3 = 9000;
+  }
+
+  // Run the signals in sequence
+  signal1(t1);
+  signal3(t2);
+  signal5(t3);
+}
+
+
+
+
+
+/// logic written by me
+
+// Traffic Light Pins
+const int r1 = 0;
+const int y1 = 1;
+const int g1 = 2;
+const int r2 = 3;
+const int y2 = 4;
+const int g2 = 5;
+const int r3 = 6;
+const int y3 = 7;
+const int g3 = 8;
+
+// PIR Sensor Pins
+const int pir1 = 9;
+const int pir2 = 10;
+const int pir3 = 11;
+
+void setup() {
+  for (int i = 0; i <= 8; i++) {
+    pinMode(i, OUTPUT);
+    digitalWrite(i, LOW);
+  }
+
+  pinMode(pir1, INPUT);
+  pinMode(pir2, INPUT);
+  pinMode(pir3, INPUT);
+}
+
+void clearLights() {
+  for (int i = 0; i <= 8; i++) {
+    digitalWrite(i, LOW);
+  }
+}
+
+// Green for road 1
+void signal1() {
+  clearLights();
+  digitalWrite(g1, HIGH);
+  digitalWrite(r2, HIGH);
+  digitalWrite(r3, HIGH);
+}
+
+// Yellow for road 2
+void signal2() {
+  clearLights();
+  digitalWrite(y2, HIGH);
+  digitalWrite(g1, HIGH);
+  digitalWrite(r3, HIGH);
+  delay(500);
+}
+
+// Green for road 2
+void signal3() {
+  clearLights();
+  digitalWrite(r1, HIGH);
+  digitalWrite(g2, HIGH);
+  digitalWrite(r3, HIGH);
+}
+
+// Yellow for road 3
+void signal4() {
+  clearLights();
+  digitalWrite(r1, HIGH);
+  digitalWrite(y3, HIGH);
+  digitalWrite(g2, HIGH);
+  delay(500);
+}
+
+// Green for road 3
+void signal5() {
+  clearLights();
+  digitalWrite(r1, HIGH);
+  digitalWrite(r2, HIGH);
+  digitalWrite(g3, HIGH);
+}
+
+// Yellow for road 1
+void signal6() {
+  clearLights();
+  digitalWrite(y1, HIGH);
+  digitalWrite(r2, HIGH);
+  digitalWrite(g3, HIGH);
+  delay(500);
+}
+
+void loop() {
+  int pir_1 = digitalRead(pir1);
+  int pir_2 = digitalRead(pir2);
+  int pir_3 = digitalRead(pir3);
+
+  // Case 1: All LOW or all HIGH → Equal split: 3 green phases × 6500ms = 19500ms
+  if ((pir_1 == LOW && pir_2 == LOW && pir_3 == LOW) || 
+      (pir_1 == HIGH && pir_2 == HIGH && pir_3 == HIGH)) {
+    signal1(); delay(6500);
+    signal2();
+    signal3(); delay(6500);
+    signal4();
+    signal5(); delay(6500);
+    signal6();
+  }
+
+  // Case 2: Only PIR1 HIGH
+  else if (pir_1 == HIGH && pir_2 == LOW && pir_3 == LOW) {
+    signal1(); delay(15000);
+    signal2();
+    signal3(); delay(2500);
+    signal4();
+    signal5(); delay(2000);
+    signal6();
+  }
+
+  // Case 3: Only PIR2 HIGH
+  else if (pir_2 == HIGH && pir_1 == LOW && pir_3 == LOW) {
+    signal1(); delay(2000);
+    signal2();
+    signal3(); delay(15000);
+    signal4();
+    signal5(); delay(2000);
+    signal6();
+  }
+
+  // Case 4: Only PIR3 HIGH
+  else if (pir_3 == HIGH && pir_1 == LOW && pir_2 == LOW) {
+    signal1(); delay(2000);
+    signal2();
+    signal3(); delay(2500);
+    signal4();
+    signal5(); delay(15000);
+    signal6();
+  }
+
+  // Case 5: PIR1 & PIR2 HIGH
+  else if (pir_1 == HIGH && pir_2 == HIGH && pir_3 == LOW) {
+    signal1(); delay(9000);
+    signal2();
+    signal3(); delay(9000);
+    signal4();
+    signal5(); delay(1500);
+    signal6();
+  }
+
+  // Case 6: PIR1 & PIR3 HIGH
+  else if (pir_1 == HIGH && pir_3 == HIGH && pir_2 == LOW) {
+    signal1(); delay(9000);
+    signal2();
+    signal3(); delay(1500);
+    signal4();
+    signal5(); delay(9000);
+    signal6();
+  }
+
+  // Case 7: PIR2 & PIR3 HIGH
+  else if (pir_2 == HIGH && pir_3 == HIGH && pir_1 == LOW) {
+    signal1(); delay(1500);
+    signal2();
+    signal3(); delay(9000);
+    signal4();
+    signal5(); delay(9000);
+    signal6();
+  }
+}
